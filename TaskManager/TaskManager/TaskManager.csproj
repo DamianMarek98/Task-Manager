@@ -72,6 +72,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\ProcessModel.cs" />
+    <Compile Include="Services\MemoryFormatter.cs" />
     <Compile Include="ViewModels\ProcessesViewModel.cs" />
     <Compile Include="Views\ProcessesView.xaml.cs">
       <DependentUpon>ProcessesView.xaml</DependentUpon>

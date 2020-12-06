@@ -4,8 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TaskManager.Views"
+        xmlns:services="clr-namespace:TaskManager.Services"
         mc:Ignorable="d"
         Title="ProcessesView" Height="450" Width="800">
+    <Window.Resources>
+        <services:MemoryFormatter x:Key="MemoryFormatter"/>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"></ColumnDefinition>
@@ -24,5 +28,27 @@
             <RowDefinition Height="20"></RowDefinition>
         </Grid.RowDefinitions>
         <TextBlock x:Name="Title" Grid.Row="1" Grid.Column="1"></TextBlock>
+        <Grid Grid.Row="2" Grid.Column="1">
+            <ListBox x:Name="Processes" ItemsSource="{Binding Processes}" SelectedItem="{Binding SelectedProcess}" Height="271" Width="600" VerticalAlignment="Top" Margin="0,29,0,0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="350"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding ProcessName}" MinWidth="200" Padding="0,0,25,0" Grid.Column="0"/>
+                            <TextBlock  Text="{Binding WorkingSet64, Converter={StaticResource MemoryFormatter}}" MinWidth="100" Padding="0,0,25,0" Grid.Column="1"/>
+                            <TextBlock Text="{Binding BasePriority}" Grid.Column="2"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Label Content="Name" HorizontalAlignment="Left" Width ="200" Margin="10,5,0,0" VerticalAlignment="Top"/>
+            <Label Content="Memory" HorizontalAlignment="Left" Margin="350,5,0,0" Width="100" VerticalAlignment="Top"/>
+            <Label Content="Priority" HorizontalAlignment="Left" Margin="455,5,0,0" VerticalAlignment="Top"/>
+        </Grid>
+        <Button x:Name="LoadProcesses" Grid.Row="3" Grid.Column="1" Width="75" Margin="10" HorizontalAlignment="Left">Reload</Button>
     </Grid>
 </Window>

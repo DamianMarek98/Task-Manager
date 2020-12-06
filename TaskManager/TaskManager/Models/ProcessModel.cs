@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TaskManager.Models
 {
-    class ProcessModel
+    public class ProcessModel
     {
     }
 }
