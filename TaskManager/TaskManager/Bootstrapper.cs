@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Caliburn.Micro;
+using TaskManager.ViewModels;
 
 namespace TaskManager
 {
@@ -12,7 +13,7 @@ namespace TaskManager
     {
         public Bootstrapper()
         {
-                Initialize();
+            Initialize();
         }
 
         protected override void OnStartup(object sender, StartupEventArgs e)
