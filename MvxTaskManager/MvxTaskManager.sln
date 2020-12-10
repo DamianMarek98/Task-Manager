@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30621.155
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvxTaskManager.Core", "MvxTaskManager.Core\MvxTaskManager.Core.csproj", "{779ABD84-F01F-4F6D-89B9-D3F3A0FE565A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvxTaskManager.Wpf", "MvxTaskManager.Wpf\MvxTaskManager.Wpf.csproj", "{C6D7A421-4B26-4EE7-B34D-D7E37A3B04FB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{779ABD84-F01F-4F6D-89B9-D3F3A0FE565A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{779ABD84-F01F-4F6D-89B9-D3F3A0FE565A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{779ABD84-F01F-4F6D-89B9-D3F3A0FE565A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{779ABD84-F01F-4F6D-89B9-D3F3A0FE565A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6D7A421-4B26-4EE7-B34D-D7E37A3B04FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6D7A421-4B26-4EE7-B34D-D7E37A3B04FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6D7A421-4B26-4EE7-B34D-D7E37A3B04FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6D7A421-4B26-4EE7-B34D-D7E37A3B04FB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FAC1CECC-9D6D-431F-AA36-4363F4909EE1}
+	EndGlobalSection
+EndGlobal
