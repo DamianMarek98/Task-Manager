@@ -9,7 +9,14 @@ namespace MvxTaskManager.Core.ViewModels
 {
     public class ProcessesViewModel : MvxViewModel
     {
+        public ProcessesViewModel()
+        {
+            LoadProcesses();
+        }
+
         private ObservableCollection<Process> _processes = new ObservableCollection<Process>();
+
+        private Process _selectedProcess;
 
         private static string _title = "Process:";
 
@@ -24,6 +31,22 @@ namespace MvxTaskManager.Core.ViewModels
             get { return _title; }
         }
 
+        public Process SelectedProcess
+        {
+            get { return _selectedProcess; }
+            set
+            {
+                _selectedProcess = value;
+            }
+        }
 
+        public void LoadProcesses()
+        {
+            Processes.Clear();
+            foreach (var p in Process.GetProcesses())
+            {
+                Processes.Add(p);
+            }
+        }
     }
 }
