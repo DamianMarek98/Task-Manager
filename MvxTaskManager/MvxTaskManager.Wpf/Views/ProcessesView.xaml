@@ -31,7 +31,7 @@
         </Grid.RowDefinitions>
         <TextBlock Grid.Column="1" Grid.Row="1" Text="Task Manager"></TextBlock>
         <Grid Grid.Row="2" Grid.Column="1">
-            <ListBox x:Name="Processes" ItemsSource="{Binding Processes}" SelectedItem="{Binding SelectedProcess}" Height="271" Width="550" VerticalAlignment="Top" Margin="0,29,0,0">
+            <ListBox x:Name="Processes" ItemsSource="{Binding Processes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedProcess}" Height="271" Width="550" VerticalAlignment="Top" Margin="0,29,0,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid HorizontalAlignment="Stretch">
@@ -48,6 +48,7 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
+        <Button mvx:Bi.nd="Command ReloadProcesses" Grid.Row="3" Grid.Column="1" Width="75" Margin="10" HorizontalAlignment="Left">Reload</Button>
     </Grid>
 
 </views:MvxWpfView>
