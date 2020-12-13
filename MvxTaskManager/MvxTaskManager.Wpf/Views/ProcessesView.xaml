@@ -47,8 +47,14 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+            <Label Content="Name:" HorizontalAlignment="Left" Width ="200" Margin="10,5,0,0" VerticalAlignment="Top"/>
+            <Label Content="Memory:" HorizontalAlignment="Left" Margin="350,5,0,0" Width="100" VerticalAlignment="Top"/>
+            <Label Content="Priority:" HorizontalAlignment="Left" Margin="455,5,0,0" VerticalAlignment="Top"/>
         </Grid>
         <Button mvx:Bi.nd="Command ReloadProcesses" Grid.Row="3" Grid.Column="1" Width="75" Margin="10" HorizontalAlignment="Left">Reload</Button>
+        <TextBox Text="{Binding ReloadTimeText}"  Grid.Row="3" Grid.Column="1" Width="75" Margin="100, 10, 10 ,10"  HorizontalAlignment="Left"></TextBox>
+        <Button mvx:Bi.nd="Command SetReloadProcessesInterval" Grid.Row="3" Grid.Column="1" Width="75" Margin="200, 10, 10 ,10"  HorizontalAlignment="Left">Set</Button>
+        <TextBlock Text="{Binding ReloadTimeText}" Grid.Row="3" Grid.Column="1" Width="75" Margin="280, 10, 10 ,10" HorizontalAlignment="Left"></TextBlock>
     </Grid>
 
 </views:MvxWpfView>

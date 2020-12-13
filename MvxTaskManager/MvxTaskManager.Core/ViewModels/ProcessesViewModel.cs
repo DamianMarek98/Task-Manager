@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Text;
 using System.Threading;
 using MvvmCross.Commands;
 using MvvmCross.ViewModels;
 using System.Timers;
+using System.Windows;
+using MvxTaskManager.Core.Services;
 
 namespace MvxTaskManager.Core.ViewModels
 {
@@ -18,14 +19,28 @@ namespace MvxTaskManager.Core.ViewModels
         {
             LoadProcesses();
             ReloadProcesses = new MvxCommand(LoadProcesses);
+            SetReloadProcessesInterval = new MvxCommand(SetTimerInterval);
             InitTimer();
         }
 
         private ObservableCollection<Process> _processes = new ObservableCollection<Process>();
+        private readonly SynchronizationContext _syncContext = SynchronizationContext.Current;
 
         private Process _selectedProcess;
 
-        private static string _title = "Process:";
+        private string _reloadTimeText;
+
+        public string ReloadTimeText
+        {
+            get { return _reloadTimeText; }
+            set
+            {
+                _reloadTimeText = value;
+                RaisePropertyChanged(() => ReloadTimeText);
+            }
+        }
+
+        public int ReloadTimeSeconds { get; set; }
 
         public IMvxCommand ReloadProcesses { get; set; }
         public IMvxCommand SetReloadProcessesInterval { get; set; }
@@ -33,12 +48,13 @@ namespace MvxTaskManager.Core.ViewModels
         public ObservableCollection<Process> Processes
         {
             get { return _processes; }
-            set { SetProperty(ref _processes, value);  }
-        }
-
-        public string Title
-        {
-            get { return _title; }
+            set
+            {
+                if (_processes == value)
+                    return;
+                SetProperty(ref _processes, value);
+                RaisePropertyChanged("Processes");
+            }
         }
 
         public Process SelectedProcess
@@ -53,15 +69,14 @@ namespace MvxTaskManager.Core.ViewModels
         public void LoadProcesses()
         {
             Processes.Clear();
-            foreach (var p in Process.GetProcesses())
-            {
-                Processes.Add(p);
-            }
+            Processes = ProcessService.GetProcesses();
         }
 
         private void InitTimer()
         {
-            _reloadTimer = new System.Timers.Timer(2000);
+            ReloadTimeSeconds = 10000;
+            _reloadTimer = new System.Timers.Timer(ReloadTimeSeconds);
+            ReloadTimeText = (ReloadTimeSeconds / 1000).ToString();
             _reloadTimer.Elapsed += ReloadProcessesOnTimedEvent;
             _reloadTimer.AutoReset = true;
             _reloadTimer.Enabled = true;
@@ -69,12 +84,21 @@ namespace MvxTaskManager.Core.ViewModels
 
         private void ReloadProcessesOnTimedEvent(Object source, ElapsedEventArgs e)
         {
-            LoadProcesses();
+            _syncContext.Send(x => { Processes = ProcessService.GetProcesses(); }, null);
         }
 
-        public void SetTimerInterval(int seconds)
+        public void SetTimerInterval()
         {
-            _reloadTimer.Interval = seconds * 100;
+            try
+            {
+                ReloadTimeSeconds = Int32.Parse(ReloadTimeText) * 1000;
+                _reloadTimer.Interval = ReloadTimeSeconds;
+            }
+            catch (System.FormatException exception)
+            {
+                Console.WriteLine("Wrong input time" + exception.Message);
+                ReloadTimeText = (ReloadTimeSeconds / 1000).ToString();
+            }
         }
     }
 }
