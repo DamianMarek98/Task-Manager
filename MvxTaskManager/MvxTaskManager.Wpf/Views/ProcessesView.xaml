@@ -7,10 +7,18 @@
                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                   xmlns:local="clr-namespace:MvxTaskManager.Wpf.Views"
                   xmlns:converters="clr-namespace:MvxTaskManager.Wpf.Converters"
+                  xmlns:diagnostics="clr-namespace:System.Diagnostics;assembly=System.Diagnostics.Process"
+                  xmlns:System="clr-namespace:System;assembly=System.Runtime"
                   mc:Ignorable="d" 
-                  d:DesignHeight="450" d:DesignWidth="800">
+                  d:DesignHeight="600" d:DesignWidth="900">
     <views:MvxWpfView.Resources>
         <converters:MemorySizeValueConverter x:Key="MemConv"/>
+        <converters:BoolToVilisbiltyConverter x:Key="BoolToVisConv"/>
+        <ObjectDataProvider x:Key="PriorityEnum" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="diagnostics:ProcessPriorityClass" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
     </views:MvxWpfView.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -36,25 +44,46 @@
                     <DataTemplate>
                         <Grid HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="350"></ColumnDefinition>
+                                <ColumnDefinition Width="330"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
                                 <ColumnDefinition Width="auto"></ColumnDefinition>
                                 <ColumnDefinition Width="auto"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding ProcessName}" MinWidth="200" Padding="0,0,25,0" Grid.Column="0"/>
-                            <TextBlock  Text="{Binding WorkingSet64, Converter={StaticResource MemConv}}" MinWidth="100" Padding="0,0,25,0" Grid.Column="1"/>
-                            <TextBlock Text="{Binding BasePriority}" Grid.Column="2"/>
+                            <TextBlock Text="{Binding Name}" MinWidth="200" Padding="0,0,25,0" Grid.Column="0"/>
+                            <TextBlock  Text="{Binding WorkingSet, Converter={StaticResource MemConv}}" MinWidth="100" Padding="0,0,25,0" Grid.Column="1"/>
+                            <TextBlock Text="{Binding BasePriority}" Grid.Column="2" MinWidth="40"/>
+                            <CheckBox IsChecked="{Binding IsTracked}" Grid.Column="3" Padding="0,0,25,0"/>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
             <Label Content="Name:" HorizontalAlignment="Left" Width ="200" Margin="10,5,0,0" VerticalAlignment="Top"/>
-            <Label Content="Memory:" HorizontalAlignment="Left" Margin="350,5,0,0" Width="100" VerticalAlignment="Top"/>
-            <Label Content="Priority:" HorizontalAlignment="Left" Margin="455,5,0,0" VerticalAlignment="Top"/>
+            <Label Content="Memory:" HorizontalAlignment="Left" Margin="330,5,0,0" Width="100" VerticalAlignment="Top"/>
+            <Label Content="Priority:" HorizontalAlignment="Left" Margin="405,5,0,0" VerticalAlignment="Top"/>
+            <Label Content="Tracked:" HorizontalAlignment="Left" Margin="475,5,0,0" VerticalAlignment="Top"/>
         </Grid>
         <Button mvx:Bi.nd="Command ReloadProcesses" Grid.Row="3" Grid.Column="1" Width="75" Margin="10" HorizontalAlignment="Left">Reload</Button>
         <TextBox Text="{Binding ReloadTimeText}"  Grid.Row="3" Grid.Column="1" Width="75" Margin="100, 10, 10 ,10"  HorizontalAlignment="Left"></TextBox>
         <Button mvx:Bi.nd="Command SetReloadProcessesInterval" Grid.Row="3" Grid.Column="1" Width="75" Margin="200, 10, 10 ,10"  HorizontalAlignment="Left">Set</Button>
         <TextBlock Text="{Binding ReloadTimeText}" Grid.Row="3" Grid.Column="1" Width="75" Margin="280, 10, 10 ,10" HorizontalAlignment="Left"></TextBlock>
+        <Button mvx:Bi.nd="Command SetSelectedProcessCommand" Grid.Row="3" Grid.Column="1" Width="75" Margin="350, 10, 10 ,10"  HorizontalAlignment="Left">Select</Button>
+        <Button mvx:Bi.nd="Command KillSelectedProcessCommand" Grid.Row="3" Grid.Column="1" Width="75" Margin="450, 10, 10 ,10"  HorizontalAlignment="Left">Kill</Button>
+        <TextBlock Text="Support:" Grid.Row="4" Grid.Column="1" Width="75" Margin="10, 10, 10 ,10" HorizontalAlignment="Left"></TextBlock>
+        <Button mvx:Bi.nd="Command StartSupportingCommand" Grid.Row="4" Grid.Column="1" Width="75" Margin="70, 10, 10 ,10"  VerticalAlignment="Top" HorizontalAlignment="Left" Height="20">Start</Button>
+        <Button mvx:Bi.nd="Command StopSupportingCommand" Grid.Row="4" Grid.Column="1" Width="75" Margin="160, 10, 10 ,10"  VerticalAlignment="Top" HorizontalAlignment="Left" Height="20">Stop</Button>
+
+        <TextBlock Grid.Column="2" Grid.Row="2" Margin="50, 15, 10, 0"  Text="Selected process:"></TextBlock>
+        <TextBlock Grid.Column="2" Grid.Row="2" Margin="50, 55, 10, 0"  Text="Pid:"></TextBlock>
+        <TextBox Grid.Column="2" Grid.Row="2" Margin="50, 75, 10, 0" Height="25" Width="150" VerticalAlignment="Top" Text="{Binding SelectedPID}"></TextBox>
+        <TextBlock Grid.Column="2" Grid.Row="2" Margin="50, 105, 10, 0"  Text="Name:"></TextBlock>
+        <TextBox Grid.Column="2" Grid.Row="2" Margin="50, 125, 10, 0" Height="25" Width="150" VerticalAlignment="Top" Text="{Binding SelectedName}"></TextBox>
+        <TextBlock Grid.Column="2" Grid.Row="2" Margin="50, 155, 10, 0"  Text="Size:"></TextBlock>
+        <TextBox Grid.Column="2" Grid.Row="2" Margin="50, 175, 10, 0" Height="25" Width="150" VerticalAlignment="Top" Text="{Binding SelectedWorkingSet}"></TextBox>
+        <TextBlock Visibility="{Binding SelectedHierarchyVisible, Converter={StaticResource BoolToVisConv}}" Grid.Column="2" Grid.Row="2" Margin="50, 205, 10, 0"  Text="Priority:"></TextBlock>
+        <ComboBox Grid.Column="2" Grid.Row="2" Margin="50, 225, 10, 0" Height="25" Width="150" VerticalAlignment="Top" Visibility="{Binding SelectedHierarchyVisible, Converter={StaticResource BoolToVisConv}}" ItemsSource="{Binding Source={StaticResource PriorityEnum}}" 
+                                 SelectedItem="{Binding SelectedPriority, Mode=TwoWay}" />
+        <Button mvx:Bi.nd="Command SaveSelectedProcessPriority" Grid.Column="2" Grid.Row="2" Margin="50, 250, 10, 0" Height="25" Width="150" VerticalAlignment="Top" Visibility="{Binding SelectedHierarchyVisible, Converter={StaticResource BoolToVisConv}}">Save</Button>
+
     </Grid>
 
 </views:MvxWpfView>
