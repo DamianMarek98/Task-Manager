@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using MvvmCross.Commands;
 using MvvmCross.ViewModels;
 using System.Timers;
@@ -139,9 +140,14 @@ namespace MvxTaskManager.Core.ViewModels
 
         public void SetSelectedProcess()
         {
-            if (SelectedProcess != null)
+            if (SelectedPID == 0 && SelectedProcess == null)
             {
-
+                SelectedName = "";
+                SelectedWorkingSet = "";
+                SelectedHierarchyVisible = false;
+            }
+            else if (SelectedProcess != null)
+            {
                 var p = Process.GetProcessById(SelectedProcess.PID);
                 SelectedPID = p.Id;
                 SelectedName = p.ProcessName;
@@ -174,6 +180,9 @@ namespace MvxTaskManager.Core.ViewModels
             {
                 Process process = Process.GetProcessById(SelectedPID);
                 process.Kill();
+                SelectedPID = 0;
+                SelectedProcess = null;
+                SetSelectedProcess();
                 Processes.Remove(SelectedProcess);
             }
         }
@@ -214,6 +223,7 @@ namespace MvxTaskManager.Core.ViewModels
                 var process = Process.GetProcessById(SelectedPID);
                 SupportedProcesses.Add(new SupportedProcessModel(SelectedPID, process.MainModule.FileName));
                 LoadProcesses();
+                SupportProcess(process);
             }
         }
 
@@ -227,6 +237,32 @@ namespace MvxTaskManager.Core.ViewModels
                     SupportedProcesses.Remove(processToStopSupport);
                     LoadProcesses();
                 }
+            }
+        }
+
+        private void SupportProcess(Process process)
+        {
+            process.EnableRaisingEvents = true;
+            EventHandler eventHandler = new EventHandler(p_Exited);
+            process.Exited += eventHandler;
+        }
+
+        private void p_Exited(object sender, System.EventArgs e)
+        {
+            Process process = (Process)sender;
+            var supportedProcess = SupportedProcesses.FirstOrDefault(p => p.PID == process.Id);
+            if (supportedProcess != null)
+            {
+                String processPath = supportedProcess.FilePath;
+                SupportedProcesses.Remove(supportedProcess);
+                var newProcess = new Process();
+                newProcess.StartInfo.FileName = processPath;
+                newProcess.Start();
+                SelectedPID = 0;
+                SelectedProcess = null;
+                SetSelectedProcess();
+                SupportedProcesses.Add(new SupportedProcessModel(newProcess.Id, processPath));
+                SupportProcess(newProcess);
             }
         }
     }
